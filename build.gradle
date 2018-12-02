@@ -22,25 +22,29 @@ allprojects {
     version = '0.0.1-SNAPSHOT'
 }
 
-configure(subprojects.findAll()) {
-    apply plugin: 'java'
+def isApp(project) {
+    project.path.startsWith(':composites') ||
+    project.path.startsWith(':servers') ||
+    project.path.startsWith(':services')
+}
+def isLibrary(project) { project.path.startsWith(':libraries') }
+
+subprojects {
+    apply plugin: 'org.springframework.boot'
     apply plugin: 'eclipse'
     apply plugin: 'idea'
-    apply plugin: 'org.springframework.boot'
     apply plugin: 'io.spring.dependency-management'
-
-    sourceCompatibility = 11
-    
-    bootJar {
-      enabled = false 
-      archiveName = "${project.name}-boot.jar"
+    if (isLibrary(it)) {
+        apply plugin: 'java-library'
+    } else {
+        apply plugin: 'java'
     }
 
     jar {
         enabled = true
     }
 
-    composeUp.dependsOn project(":${it.path}").bootJar
+    sourceCompatibility = 11
 
     File dockerFile = project(":${it.path}").file('Dockerfile')
     if (dockerFile.exists()) {
@@ -88,5 +92,30 @@ configure(subprojects.findAll()) {
             dependency "io.springfox:springfox-swagger2:${springFoxSwaggerVersion}"
             dependency "io.springfox:springfox-swagger-ui:${springFoxSwaggerVersion}"
         }
+    }
+}
+
+configure(subprojects.findAll{ isLibrary(it) }) {
+    bootJar {
+        enabled = false
+    }
+}
+
+configure(subprojects.findAll{ isApp(it) }) {
+    if (it.subprojects.size() == 0) {
+        bootJar {
+            archiveName = "${project.name}-boot.jar"
+        }
+
+        composeUp.dependsOn project(":${it.path}").bootJar
+    } else {
+        bootJar {
+            enabled = false
+        }
+    }
+
+    dependencies {
+        implementation('org.springframework.boot:spring-boot-starter-actuator')
+        testImplementation('org.springframework.boot:spring-boot-starter-test')
     }
 }

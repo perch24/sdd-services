@@ -1,0 +1,8 @@
+configurations {
+    webMvcService
+    webFluxService
+}
+
+dependencies {
+    
+}

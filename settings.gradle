@@ -1,6 +1,6 @@
-rootProject.name = 'microservices'
+rootProject.name = 'sdd-services'
 
-include ':shared:config-client'
+include ':libraries:config-client'
 
 include ':composites:league'
 

@@ -1,5 +1,0 @@
-subprojects {
-  jar {
-    archiveName = "${project.name}.jar"
-  }
-}

@@ -1,5 +1,5 @@
 dependencies {
-    implementation project(':shared:config-client')
+    implementation project(':libraries:config-client')
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('io.springfox:springfox-spring-webmvc')

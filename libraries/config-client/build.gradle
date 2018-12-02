@@ -1,0 +1,8 @@
+dependencies {
+    api('org.springframework.cloud:spring-cloud-starter-config')
+    api('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+    api('org.springframework:spring-context-support')
+    api('org.springframework.retry:spring-retry')
+    api('io.springfox:springfox-swagger2')
+    api('io.springfox:springfox-swagger-ui')
+}

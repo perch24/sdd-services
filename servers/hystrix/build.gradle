@@ -1,5 +1,5 @@
 dependencies {
-    implementation project(':libraries:config-client')
+    implementation project(':shared:config-client')
     implementation('org.springframework.boot:spring-boot-starter-web')
     
     implementation('org.springframework.cloud:spring-cloud-starter-netflix-hystrix')
