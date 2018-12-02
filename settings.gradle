@@ -2,7 +2,7 @@ rootProject.name = 'microservices'
 
 include ':shared:config-client'
 
-include ':composites:business-reservation-service'
+include ':composites:league'
 
 include ':servers:config'
 include ':servers:eureka'

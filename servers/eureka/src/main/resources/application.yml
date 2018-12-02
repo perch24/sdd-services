@@ -6,7 +6,6 @@ server:
   port: 8761
 
 eureka:
-  enableSelfPreservation: false
   environment: development
   instance:
     hostname: localhost
@@ -15,6 +14,8 @@ eureka:
     fetchRegistry: false
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  server:
+    enableSelfPreservation: false
 
 ---
 spring:

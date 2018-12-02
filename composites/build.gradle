@@ -1,7 +1,6 @@
 subprojects {
   bootJar {
-    archiveName = "${project.name}.jar"
-    classifier = "boot"
+    enabled = true
   }
 
   dependencies {

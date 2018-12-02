@@ -70,6 +70,42 @@ services:
     depends_on:
       - config-server
 
+  course-service:
+    image: course-service
+    hostname: course-service
+    build:
+      context: ./services/course
+      dockerfile: Dockerfile
+    container_name: course-service
+    ports:
+    - 8102:8102
+    environment:
+    - SPRING_PROFILES_ACTIVE=development
+    networks:
+    - network-apps
+    - network-eureka
+    - network-config
+    depends_on:
+    - config-server
+
+  league-composite:
+    image: league-composite
+    hostname: league-composite
+    build:
+      context: ./composites/league
+      dockerfile: Dockerfile
+    container_name: league-composite
+    ports:
+    - 9101:9101
+    environment:
+    - SPRING_PROFILES_ACTIVE=development
+    networks:
+    - network-apps
+    - network-eureka
+    - network-config
+    depends_on:
+    - config-server
+
 networks:
   network-eureka:
   network-config:

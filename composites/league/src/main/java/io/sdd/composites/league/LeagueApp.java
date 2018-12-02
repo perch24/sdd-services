@@ -1,4 +1,4 @@
-package io.sdd.business.reservation;
+package io.sdd.composites.league;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,7 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 @EnableSwagger2WebMvc
 @EnableCircuitBreaker
 @EnableHystrixDashboard
-public class BusinessReservationApp {
+public class LeagueApp {
     @LoadBalanced
     @Bean
     public RestTemplate restTemplate() {
@@ -25,6 +25,6 @@ public class BusinessReservationApp {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(BusinessReservationApp.class);
+        SpringApplication.run(LeagueApp.class);
     }
 }
