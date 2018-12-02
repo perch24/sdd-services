@@ -8,7 +8,7 @@ spring:
     config:
       server:
         git:
-          uri: ${HOME}/Development/config
+          uri: https://github.com/perch24/sdd-config.git
 
 eureka:
   environment: development
@@ -21,11 +21,6 @@ eureka:
 ---
 spring:
   profiles: docker
-  cloud:
-    config:
-      server:
-        git:
-          uri: /opt/config
 
 eureka:
   environment: docker

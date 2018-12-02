@@ -23,8 +23,6 @@ services:
       context: ./servers/config
       dockerfile: Dockerfile
     container_name: config-server
-    volumes:
-      - '~/Development/sdd-config:/opt/config'
     ports:
       - 9000:9000
     environment:
