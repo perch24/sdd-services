@@ -18,7 +18,7 @@ dockerCompose {
 }
 
 allprojects {
-    group = 'io.perch.microservices'
+    group = 'io.sdd'
     version = '0.0.1-SNAPSHOT'
 }
 
