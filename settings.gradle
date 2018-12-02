@@ -1,0 +1,12 @@
+rootProject.name = 'microservices'
+
+include ':shared:config-client'
+
+include ':composites:business-reservation-service'
+
+include ':servers:config'
+include ':servers:eureka'
+include ':servers:gateway'
+
+include ':services:course'
+include ':services:user'

@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: eureka
+
+server:
+  port: 8761
+
+eureka:
+  enableSelfPreservation: false
+  environment: development
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+
+---
+spring:
+  profiles: docker
+  instance:
+    hostname: eureka
+
+eureka:
+  environment: docker

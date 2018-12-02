@@ -1,0 +1,6 @@
+dependencies {
+    implementation project(':shared:config-client')
+    implementation('org.springframework.cloud:spring-cloud-starter-gateway')
+    implementation('io.springfox:springfox-spring-webflux')
+    implementation('com.github.ben-manes.caffeine:caffeine')
+}

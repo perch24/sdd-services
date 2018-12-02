@@ -1,0 +1,92 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+plugins {
+    // Documentation: https://github.com/avast/gradle-docker-compose-plugin
+    id "com.avast.gradle.docker-compose" version "0.8.12"
+}
+
+dockerCompose {
+    useComposeFiles = ['docker-compose.yml']
+    //captureContainersOutput = true
+}
+
+allprojects {
+    group = 'io.perch.microservices'
+    version = '0.0.1-SNAPSHOT'
+}
+
+configure(subprojects.findAll()) {
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = 11
+    
+    bootJar {
+      enabled = false 
+      archiveName = "${project.name}-boot.jar"
+    }
+
+    jar {
+        enabled = true
+    }
+
+    composeUp.dependsOn project(":${it.path}").bootJar
+
+    File dockerFile = project(":${it.path}").file('Dockerfile')
+    if (dockerFile.exists()) {
+        task copyDockerCommon(type: Copy) {
+            from project(':').file('docker')
+            into "$buildDir/docker"
+        }
+        composeUp.dependsOn project(":${it.path}").copyDockerCommon
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    test.doFirst {
+        // exposes "${serviceName}_HOST" and "${serviceName}_TCP_${exposedPort}" environment variables
+        // for example exposes "WEB_HOST" and "WEB_TCP_80" environment variables for service named `web` with exposed port `80`
+        // if service is scaled using scale option, environment variables will be exposed for each service instance like "WEB_1_HOST", "WEB_1_TCP_80", "WEB_2_HOST", "WEB_2_TCP_80" and so on
+        dockerCompose.exposeAsEnvironment(test)
+        // exposes "${serviceName}.host" and "${serviceName}.tcp.${exposedPort}" system properties
+        // for example exposes "web.host" and "web.tcp.80" system properties for service named `web` with exposed port `80`
+        // if service is scaled using scale option, environment variables will be exposed for each service instance like "web_1.host", "web_1.tcp.80", "web_2.host", "web_2.tcp.80" and so on
+        dockerCompose.exposeAsSystemProperties(test)
+    }
+
+    dependencies {
+        testImplementation "org.junit.jupiter:junit-jupiter-api"
+        testImplementation "org.junit.jupiter:junit-jupiter-params"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+    }
+
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.spring.io/milestone" }
+        maven { url 'http://oss.jfrog.org/artifactory/oss-snapshot-local/' }
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+        dependencies {
+            dependency "io.springfox:springfox-spring-webflux:${springFoxSwaggerVersion}"
+            dependency "io.springfox:springfox-spring-webmvc:${springFoxSwaggerVersion}"
+            dependency "io.springfox:springfox-swagger2:${springFoxSwaggerVersion}"
+            dependency "io.springfox:springfox-swagger-ui:${springFoxSwaggerVersion}"
+        }
+    }
+}

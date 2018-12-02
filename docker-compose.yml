@@ -1,0 +1,78 @@
+version: '3.7'
+
+services:
+  eureka:
+    image: eureka-server
+    hostname: eureka
+    build:
+      context: ./servers/eureka
+      dockerfile: Dockerfile
+    container_name: eureka
+    ports:
+      - 8761:8761
+    environment:
+      - SPRING_PROFILES_ACTIVE=development
+    networks:
+      - network-eureka
+      - network-config
+
+  config-server:
+    image: config-server
+    hostname: config-server
+    build:
+      context: ./servers/config
+      dockerfile: Dockerfile
+    container_name: config-server
+    volumes:
+      - '~/Development/config:/opt/config'
+    ports:
+      - 9000:9000
+    environment:
+      - SPRING_PROFILES_ACTIVE=development
+      - WAIT_FOR_IT=eureka:8761
+    networks:
+      - network-config
+      - network-eureka
+    depends_on:
+      - eureka
+
+  gateway-server:
+    image: gateway-server
+    hostname: gateway
+    build:
+      context: ./servers/gateway
+      dockerfile: Dockerfile
+    container_name: gateway-server
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_PROFILES_ACTIVE=development
+    networks:
+      - network-apps
+      - network-eureka
+      - network-config
+    depends_on:
+      - config-server
+
+  user-service:
+    image: user-service
+    hostname: user-service
+    build:
+      context: ./services/user
+      dockerfile: Dockerfile
+    container_name: user-service
+    ports:
+      - 8101:8101
+    environment:
+     - SPRING_PROFILES_ACTIVE=development
+    networks:
+      - network-apps
+      - network-eureka
+      - network-config
+    depends_on:
+      - config-server
+
+networks:
+  network-eureka:
+  network-config:
+  network-apps:
